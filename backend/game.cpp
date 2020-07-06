@@ -161,6 +161,9 @@ std::vector<Move> GameControl::validate_moveset(std::vector<Move> possible_moves
                 if (!this->board[mv.target_location[0]][mv.target_location[1]].en_passant()){
                     continue;
                 }
+                if (query(mv.target_location[0], mv.target_location[1]).Side == moving_piece.Side){
+                    continue;
+                }
             }
             
             /*Remove illegal castling*/
