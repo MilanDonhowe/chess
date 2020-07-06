@@ -30,6 +30,9 @@ public:
     bool en_passant(){
         return (this->isEmpty()) ? false : this->contained_piece->en_passant();
     };
+    bool castle(){
+        return (this->isEmpty()) ? false : this->contained_piece->castle();
+    }
     void operator=(Piece*);
     void operator=(const Space&);
     void updatePiece(const Move&);

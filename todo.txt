@@ -1,5 +1,6 @@
 Things to implement:
 
--> Castling
+-> Castling (In fashion similar to how I implemented en passant by adding a castle flag check & naively assume the move is possible if the king has not moved.)
+-> Remove Zombie Code & Clean up comments
 
 

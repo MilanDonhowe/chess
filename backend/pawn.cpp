@@ -7,6 +7,9 @@ using namespace chess;
 Pawn::Pawn(int row, int col, TEAM side): Piece(row, col, side){
     this->state = FIRST_MOVE;
 };
+Pawn::Pawn(int row, int col, TEAM side, PAWN_STATE state): Piece(row, col, side){
+    this->state = state;
+};
 
 
 std::vector<Move> Pawn::generate_moves(){
@@ -19,38 +22,37 @@ std::vector<Move> Pawn::generate_moves(){
 
     if (this->state == FIRST_MOVE){
          if (inBounds(row+(2*teamDirection))){
-             Move double_jump ({{row, col}}, {{row+(2*teamDirection), col}}, {{-1, -1}});
+             Move double_jump ({{row, col}}, {{row+(2*teamDirection), col}}, PAWN_ADVANCE);
              movable_spaces.push_back(double_jump);
          }
     }
    
    if (inBounds(row+(1*teamDirection))){
 
-       Move single_jump ({{row, col}}, {{row+(1*teamDirection), col}}, {{-1, -1}});
+       Move single_jump ({{row, col}}, {{row+(1*teamDirection), col}}, PAWN_ADVANCE);
        movable_spaces.push_back(single_jump);
        /*Add Capture Moves Utilizing Target Piece*/
        if(inBounds(col+1)){
             single_jump.destination = {{row+(1*teamDirection), col+1}};
             single_jump.target_location = single_jump.destination;
-            single_jump.mustCapture = true;
+            single_jump.move_flag = PAWN_CAPTURE;
             movable_spaces.push_back(single_jump);
 
             /*ADD EN PASSANT*/
             single_jump.target_location = {{row, col+1}};
-            single_jump.mustCapture = false;
+            single_jump.move_flag = EN_PASSANT_MOVE;
             movable_spaces.push_back(single_jump);
 
        }
        if (inBounds(col-1)){
            single_jump.destination = {{row+(1*teamDirection), col-1}};
            single_jump.target_location = single_jump.destination;
-           single_jump.mustCapture = true;
+           single_jump.move_flag = PAWN_CAPTURE;
            movable_spaces.push_back(single_jump);
 
            /*ADD EN PASSANT*/
             single_jump.target_location = {{row, col-1}};
-            single_jump.mustCapture = false; //<-- has to be false or will be interpreted
-                                             //    as an illegal diagonal pawn move.
+            single_jump.move_flag = EN_PASSANT_MOVE;
             movable_spaces.push_back(single_jump);
 
        }
@@ -79,5 +81,5 @@ void Pawn::execute_move(const Move& mv){
 
 
 Piece* Pawn::clone(){
-    return new Pawn(this->location[0], this->location[1], this->side);
+    return new Pawn(this->location[0], this->location[1], this->side, this->state);
 };

@@ -17,6 +17,7 @@ private:
     PAWN_STATE state;
 public:
     Pawn(int, int, TEAM);
+    Pawn(int, int, TEAM, PAWN_STATE);
     virtual std::string text() const override {return " p ";};
     virtual Piece_ID id() const override;
     virtual void execute_move(const Move& mv);

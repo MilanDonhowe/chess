@@ -86,11 +86,27 @@ void GameControl::perform_move(const Move& mv){
     // And we add the new piece to the destination space
     destination_space = movingPiece;
 
+    /*If move is a castle then let's update the rook's position*/
+    if (mv.move_flag == CASTLE){
+        Move castle_move;
+        castle_move.origin = mv.target_location;
+        castle_move.destination[0] = mv.origin[0];
+        // if castle is to the left of the king
+        if (mv.origin[1] > mv.target_location[1]){
+            castle_move.destination[1] = mv.target_location[1]+3;
+        } else {
+            castle_move.destination[1] = mv.target_location[1]-2;
+        }
+        this->perform_move(castle_move);
+    }
+
+
     /*
     Now we just double check to see if there's a piece
     we need to remove in the case of En Passant
     */
-   if (mv.target_location[0] != mv.destination[0] && mv.target_location[0] != -1){
+   if (mv.move_flag == EN_PASSANT_MOVE){
+   //if (mv.target_location[0] != mv.destination[0] && mv.target_location[0] != -1){
        //std::cout << "removing piece @ " << mv.target_location[0] << ", " << mv.target_location[1] << std::endl;
        this->board[mv.target_location[0]][mv.target_location[1]].eliminate_piece();
    }
@@ -124,32 +140,56 @@ std::vector<Move> GameControl::validate_moveset(std::vector<Move> possible_moves
                 }
             }
 
-            // okay I'm def losing brain cells at this point
-            // but here is the extra stuff for validating pawn
-            // moves since their move set depends on the pieces
-            // around them (e.g. diagonal capture, forward movement, en passant).
+            // okay now we validate moves with special states (e.g. moves that
+            // depend on the state of the board) like en passant and castling.
+            
+            // this predominately refers to the pawn's moveset. 
+
 
             // remove illegal advancement moves (for pawns)
-            if (mv.target_location[0] == -1 && dest_piece.Side != NO_SIDE){
+            if (mv.move_flag == PAWN_ADVANCE && dest_piece.Side != NO_SIDE){
                 continue;
             }
+            
             // remove illegal diagonal pawn moves (where pawn doesn't capture)
-            if (dest_piece.Side == NO_SIDE && mv.mustCapture){
+            if (mv.move_flag == PAWN_CAPTURE && dest_piece.Side == NO_SIDE){
                 continue;
             }
 
             // remove illegal en passant
-            if (mv.destination[0] != mv.target_location[0] && mv.target_location[0] != -1){
+            if (mv.move_flag == EN_PASSANT_MOVE){
                 if (!this->board[mv.target_location[0]][mv.target_location[1]].en_passant()){
                     continue;
                 }
             }
+            
+            /*Remove illegal castling*/
+            if (mv.move_flag == CASTLE){
+                // Check if rook has moved
+                if (!this->board[mv.target_location[0]][mv.target_location[1]].castle()){
+                    continue;
+                }
+                // Check if the space between the rook & king destination is empty.
+                // (The other distance will be checked automatically by the general purpose move validation function)
+                bool piecesInWay = false;
+                for (int start_pos = mv.target_location[1]+1; start_pos < mv.destination[1]; start_pos++){
+                    if(this->query(mv.origin[0], start_pos).Type != NO_PIECE){
+                        piecesInWay = true;
+                        break;
+                    };
+                }
+                if (piecesInWay) continue;
+
+                /*TODO: Check if move results in check --> should be done in obtaining legal moves function*/
+
+            }
+
+
 
             valid_moves.push_back(mv);
         }
     }
 
-    /*Todo: does move result in check?*/
     return valid_moves;
 }
 

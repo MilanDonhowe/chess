@@ -31,23 +31,7 @@ namespace chess {
         BLACK_CHECKMATE = 8 //01000
     };
 
-    /*
-    enum Piece_ID{
-        WHITE_PAWN,
-        BLACK_PAWN,
-        WHITE_KNIGHT,
-        BLACK_KNIGHT,
-        WHITE_BISHOP,
-        BLACK_BISHOP,
-        WHITE_ROOK,
-        BLACK_ROOK,
-        WHITE_KING,
-        BLACK_KING,
-        WHITE_QUEEN,
-        BLACK_QUEEN,
-        NO_PIECE
-    };
-    */
+   
 
     enum Piece_Type {
         PAWN,

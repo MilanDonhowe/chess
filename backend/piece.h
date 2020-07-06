@@ -48,6 +48,9 @@ namespace chess
         virtual bool en_passant(){
             return false;
         };
+        virtual bool castle(){
+            return false;
+        };
     };
 
 } // namespace chess

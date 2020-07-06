@@ -2,7 +2,9 @@
 
 using namespace chess;
 
-Rook::Rook(int r, int c, TEAM s): Piece(r, c, s){};
+Rook::Rook(int r, int c, TEAM s): Piece(r, c, s){firstMove = true;};
+Rook::Rook(int r, int c, TEAM s, bool state): Piece(r, c, s){firstMove = state;};
+
 
 std::vector<Move> Rook::generate_moves(){
     std::vector<Move> movable_spaces;
@@ -30,5 +32,16 @@ Piece_ID Rook::id() const {
 }
 
 Piece* Rook::clone(){
-    return new Rook(this->location[0], this->location[1], this->side);
+    return new Rook(this->location[0], this->location[1], this->side, this->firstMove);
+};
+
+void Rook::execute_move(const Move& mv){
+    this->location[0] = mv.destination[0];
+    this->location[1] = mv.destination[1];
+    if (this->firstMove) this->firstMove = false;
+};
+
+
+bool Rook::castle(){
+    return this->firstMove;
 };
