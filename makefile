@@ -3,7 +3,7 @@ CFLAGS=-Wall -g
 progname=CHESS
 
 VPATH=backend;frontend
-BACKENDFILES=draw.o game.o piece.o pawn.o knight.o rook.o bishop.o queen.o king.o space.o util.o
+BACKENDFILES=game.o piece.o pawn.o knight.o rook.o bishop.o queen.o king.o space.o util.o
 FRONTENDFILES=table.o
 
 # SDL Includes Flags
